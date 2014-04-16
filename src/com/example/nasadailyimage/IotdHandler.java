@@ -129,4 +129,20 @@ public class IotdHandler extends DefaultHandler {
 	public String getUrl() {
 		return url;
 	}
+
+	public Bitmap getImage() { 
+		return image; 
+	}
+	
+	public StringBuffer getTitle() { 
+		return title; 
+	}
+	
+	public StringBuffer getDescription() { 
+		return description; 
+	}
+	
+	public String getDate() { 
+		return date; 
+	}
 }
