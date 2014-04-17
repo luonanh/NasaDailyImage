@@ -52,7 +52,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/refresh" />
+            android:text="@string/refresh" 
+            android:onClick="onRefresh"/>
     </LinearLayout>
 
 </LinearLayout>

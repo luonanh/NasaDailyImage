@@ -2,6 +2,7 @@ package com.example.nasadailyimage;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -11,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
+	Handler handler = null;
+	IotdHandler iotHandler = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +28,8 @@ public class MainActivity extends ActionBarActivity {
 		*/
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		IotdHandler handler = new IotdHandler();
-		handler.processFeed();
-		resetDisplay(handler.getTitle().toString(), handler.getDate(), 
-				handler.getDescription().toString(), handler.getImage());
+		handler = new Handler();
+		refreshFromFeed();
 	}
 	
 	private void resetDisplay(String title, String date,
@@ -42,6 +42,29 @@ public class MainActivity extends ActionBarActivity {
 		imageView.setImageBitmap(image);
 		TextView descriptionView = (TextView) findViewById(R.id.imageDescription);
 		descriptionView.setText(description);
+	}
+	
+	public void refreshFromFeed() {
+		
+		Thread th = new Thread() {
+			public void run() {
+				if (iotHandler == null) {
+					iotHandler = new IotdHandler();
+				}
+				iotHandler.processFeed();
+				handler.post(new Runnable() {
+					public void run () {
+						resetDisplay(iotHandler.getTitle().toString(), iotHandler.getDate(), 
+								iotHandler.getDescription().toString(), iotHandler.getImage());						
+					}
+				});
+			}
+		};
+		th.start();
+	}
+	
+	public void onRefresh(View view) {
+		refreshFromFeed();
 	}
 	
 	/*
